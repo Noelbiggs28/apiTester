@@ -3,11 +3,18 @@ import { useState } from "react";
 export default function LibraryTester() {
   const [title, setTitle] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [searchType, setSearchType] = useState("title"); // Default to searching by title
 
   const fetchBooks = async (context) => {
-    const useableTitle = context.title.split(' ').join('+')
+    let useableContext = context.title.replace(/ /g, "+")
     try {
-      const url = `http://localhost:8000/library/?title=${useableTitle}`;
+      let url;
+      if (searchType === "author") {
+        url = `http://localhost:8000/library/author/?author=${useableContext}`;
+      } else {
+        url = `http://localhost:8000/library/title/?title=${useableContext}`;
+      }
+      console.log(url)
       const apiData = await fetch(url);
       const apiJSON = await apiData.json();
 
@@ -24,6 +31,10 @@ export default function LibraryTester() {
     setTitle(value);
   };
 
+  const handleSearchTypeChange = (e) => {
+    setSearchType(e.target.value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const context = { title };
@@ -34,7 +45,11 @@ export default function LibraryTester() {
     <div>
       <form onSubmit={handleSubmit}>
         <div id="title">
-          <label htmlFor="title">Title: </label>
+          <label htmlFor="title">Search by:</label>
+          <select value={searchType} onChange={handleSearchTypeChange}>
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+          </select>
           <input
             id="title"
             type="text"
