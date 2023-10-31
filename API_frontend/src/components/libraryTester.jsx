@@ -19,6 +19,7 @@ export default function LibraryTester() {
       const apiJSON = await apiData.json();
 
       if (apiJSON.docs) {
+        console.log(apiJSON.docs)
         setSearchResults(apiJSON.docs);
       }
     } catch (error) {
@@ -66,8 +67,8 @@ export default function LibraryTester() {
         <ul>
           {searchResults.map((result, index) => (
             <li key={index}>
-              Author: {result.author_name}, Title: {result.title}
-              <img src={`https://covers.openlibrary.org/b/id/${result.cover_i}-M.jpg`} alt="Book Cover" />
+              Author: {result.author_name}, Title: {result.title}, Pages: {result.number_of_pages_median}
+              <img src={result.cover_i ? `https://covers.openlibrary.org/b/id/${result.cover_i}-M.jpg`:'/default_book.png'} alt="Book Cover" />
             </li>
           ))}
         </ul>
